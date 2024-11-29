@@ -159,7 +159,7 @@ class TestProductModel(unittest.TestCase):
     def test_list_all_products(self):
         """It should List all Products in the database"""
         products = Product.all()
-        self.assertEqual(len(products), 0)
+        self.assertEqual(products, [])
 
         # Create 5 products
         for _ in range(5):
