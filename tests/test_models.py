@@ -169,3 +169,88 @@ class TestProductModel(unittest.TestCase):
         # Return created products
         products = Product.all()
         self.assertEqual(len(products), 5)
+
+    def test_find_by_name(self):
+        """ It should Find a Product by Name """
+        products = ProductFactory.create_batch(5)
+        for product in products:
+            product.create()
+
+        name = products[0].name
+        count = len([product for product in products if product.name == name])
+        product_found = Product.find_by_name(name)
+        self.assertEqual(product_found.count(), count)
+        for product in product_found:
+            self.assertEqual(product.name, name)
+
+    def test_find_by_availability(self):
+        """ It should Find Products by Availability """
+        products = ProductFactory.create_batch(10)
+        for product in products:
+            product.create()
+        available = products[0].available
+        count = len([product for product in products if product.available == available])
+        produt_found = Product.find_by_availability(available)
+        self.assertEqual(produt_found.count(), count)
+        for product in produt_found:
+            self.assertEqual(product.available, available)
+
+    def test_find_by_category(self):
+        """ It should Find Products by Category """
+        products = ProductFactory.create_batch(10)
+        for product in products:
+            product.create()
+        category = products[0].category
+        count = len([product for product in products if product.category == category])
+        produt_found = Product.find_by_category(category)
+        self.assertEqual(produt_found.count(), count)
+        for product in produt_found:
+            self.assertEqual(product.category, category)
+
+    def test_find_by_price(self):
+        """ It should Find Products by Price """
+        products = ProductFactory.create_batch(10)
+        for product in products:
+            product.create()
+        price = products[0].price
+        count = len([product for product in products if product.price == price])
+        produt_found = Product.find_by_price(price)
+        self.assertEqual(produt_found.count(), count)
+        for product in produt_found:
+            self.assertEqual(product.price, price)
+
+    def test_deserialize_with_invalid_body(self):
+        """ It should raise a DataValidationError for invalid body input """
+        product = ProductFactory()
+        invalid_data = None
+        with self.assertRaises(DataValidationError):
+            product.deserialize(invalid_data)
+
+    def test_price_parsing_with_valid_string_from_product(self):
+        """ It should correctly handle altered price """
+        product = ProductFactory(price=Decimal("18.16"))
+        product.id = None
+        product.create()
+        self.assertIsNotNone(product.id)
+
+        altered_price = ' "18.16" '
+        products_found = Product.find_by_price(altered_price).all()
+
+        self.assertEqual(len(products_found), 1)
+        self.assertEqual(products_found[0].id, product.id)
+        self.assertEqual(products_found[0].price, Decimal("18.16"))
+
+    def test_deserialize_with_invalid_available_type(self):
+        """ It should raise DataValidationError for invalid type in the available field """
+        product = ProductFactory()
+
+        product_data = {
+            "name": "Hat",
+            "description": "A large hat",
+            "price": "34.99",
+            "available": "yes",
+            "category": "CLOTHS",
+        }
+
+        with self.assertRaises(DataValidationError):
+            product.deserialize(product_data)
