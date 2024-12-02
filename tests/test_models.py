@@ -27,7 +27,7 @@ import os
 import logging
 import unittest
 from decimal import Decimal
-from service.models import Product, Category, db
+from service.models import Product, Category, db, DataValidationError
 from service import app
 from tests.factories import ProductFactory
 
@@ -156,6 +156,12 @@ class TestProductModel(unittest.TestCase):
         product.delete()
         self.assertEqual(len(Product.all()), 0)
 
+    def test_invalid_id_on_update(self):
+        """ Test Invalid ID update """
+        product = ProductFactory()
+        product.id = None
+        self.assertRaises(DataValidationError, product.update)
+
     def test_list_all_products(self):
         """It should List all Products in the database"""
         products = Product.all()
@@ -228,8 +234,9 @@ class TestProductModel(unittest.TestCase):
 
     def test_price_parsing_with_valid_string_from_product(self):
         """ It should correctly handle altered price """
-        product = ProductFactory(price=Decimal("18.16"))
+        product = ProductFactory()
         product.id = None
+        product.price = Decimal("18.16")
         product.create()
         self.assertIsNotNone(product.id)
 
