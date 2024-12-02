@@ -28,12 +28,11 @@ import os
 import logging
 from decimal import Decimal
 from unittest import TestCase
+from urllib.parse import quote_plus
 from service import app
 from service.common import status
 from service.models import db, init_db, Product
 from tests.factories import ProductFactory
-from urllib.parse import quote_plus
-
 
 # Disable all but critical errors during normal test run
 # uncomment for debugging failing tests
@@ -136,15 +135,16 @@ class TestProductRoutes(TestCase):
         # # Uncomment this code once READ is implemented
         # #
 
-        # # Check that the location header was correct
-        # response = self.client.get(location)
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # new_product = response.get_json()
-        # self.assertEqual(new_product["name"], test_product.name)
-        # self.assertEqual(new_product["description"], test_product.description)
-        # self.assertEqual(Decimal(new_product["price"]), test_product.price)
-        # self.assertEqual(new_product["available"], test_product.available)
-        # self.assertEqual(new_product["category"], test_product.category.name)
+        # Check that the location header was correct
+        response = self.client.get(location)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        new_product = response.get_json()
+        self.assertEqual(new_product["name"], test_product.name)
+        self.assertEqual(new_product["description"], test_product.description)
+        self.assertEqual(Decimal(new_product["price"]), test_product.price)
+        self.assertEqual(new_product["available"], test_product.available)
+        self.assertEqual(new_product["category"], test_product.category.name)
+
     def test_create_product_with_no_name(self):
         """It should not Create a Product without a name"""
         product = self._create_products()[0]
@@ -167,18 +167,6 @@ class TestProductRoutes(TestCase):
     #
     # ADD YOUR TEST CASES HERE
     #
-
-    ######################################################################
-    # Utility functions
-    ######################################################################
-
-    def get_product_count(self):
-        """save the current number of products"""
-        response = self.client.get(BASE_URL)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.get_json()
-        # logging.debug("data = %s", data)
-        return len(data)
 
     def test_get_product(self):
         """It should Get a single Product"""
@@ -279,3 +267,15 @@ class TestProductRoutes(TestCase):
         # check the data just to be sure
         for product in data:
             self.assertEqual(product["available"], True)
+
+    ######################################################################
+    # Utility functions
+    ######################################################################
+
+    def get_product_count(self):
+        """save the current number of products"""
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        # logging.debug("data = %s", data)
+        return len(data)
