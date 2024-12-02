@@ -68,6 +68,8 @@ def check_content_type(content_type):
 ######################################################################
 # C R E A T E   A   N E W   P R O D U C T
 ######################################################################
+
+
 @app.route("/products", methods=["POST"])
 def create_products():
     """
@@ -97,6 +99,8 @@ def create_products():
 ######################################################################
 # LIST PRODUCTS
 ######################################################################
+
+
 @app.route("/products", methods=["GET"])
 def list_products():
     """Returns a list of Products"""
@@ -127,13 +131,11 @@ def list_products():
 ######################################################################
 # READ A PRODUCT
 ######################################################################
+
+
 @app.route("/products/<int:product_id>", methods=["GET"])
 def get_products(product_id):
-    """
-    Retrieve a single Product
-
-    This endpoint will return a Product based on it's id
-    """
+    """ Retrieve a single Product This endpoint will return a Product based on it's id """
     app.logger.info("Request to Retrieve a product with id [%s]", product_id)
 
     product = Product.find(product_id)
@@ -146,6 +148,8 @@ def get_products(product_id):
 ######################################################################
 # UPDATE AN EXISTING PRODUCT
 ######################################################################
+
+
 @app.route("/products/<int:product_id>", methods=["PUT"])
 def update_products(product_id):
     """
@@ -167,6 +171,8 @@ def update_products(product_id):
 ######################################################################
 # DELETE A PRODUCT
 ######################################################################
+
+
 @app.route("/products/<int:product_id>", methods=["DELETE"])
 def delete_products(product_id):
     """

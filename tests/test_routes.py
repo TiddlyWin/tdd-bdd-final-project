@@ -145,7 +145,6 @@ class TestProductRoutes(TestCase):
         # self.assertEqual(Decimal(new_product["price"]), test_product.price)
         # self.assertEqual(new_product["available"], test_product.available)
         # self.assertEqual(new_product["category"], test_product.category.name)
-
     def test_create_product_with_no_name(self):
         """It should not Create a Product without a name"""
         product = self._create_products()[0]
@@ -225,7 +224,7 @@ class TestProductRoutes(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         new_count = self.get_product_count()
         self.assertEqual(new_count, product_count - 1)
-    
+
     def test_get_product_list(self):
         """It should Get a list of Products"""
         self._create_products(5)
@@ -269,7 +268,7 @@ class TestProductRoutes(TestCase):
         """It should Query Products by availability"""
         products = self._create_products(10)
         available_products = [product for product in products if product.available is True]
-        available_count = len(available_products)        
+        available_count = len(available_products)
         # test for available
         response = self.client.get(
             BASE_URL, query_string="available=true"
@@ -279,4 +278,4 @@ class TestProductRoutes(TestCase):
         self.assertEqual(len(data), available_count)
         # check the data just to be sure
         for product in data:
-            self.assertEqual(product["available"], True)       
+            self.assertEqual(product["available"], True)

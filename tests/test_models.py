@@ -104,7 +104,6 @@ class TestProductModel(unittest.TestCase):
     #
     # ADD YOUR TEST CASES HERE
     #
-    
     def test_read_a_product(self):
         """ It should read a product from the DB """
         product = ProductFactory()
@@ -146,13 +145,9 @@ class TestProductModel(unittest.TestCase):
         # Call the create() method on the product to save it to the database.
         product = ProductFactory()
         product.id = None
-        
         product.create()
         self.assertIsNotNone(product.id)
-        
-        products = Product.all()
         self.assertEqual(len(Product.all()), 1)
-        
         product.delete()
         self.assertEqual(len(Product.all()), 0)
 
